@@ -1,5 +1,10 @@
 console.log('this is loaded');
 
+var TWITTER_CONSUMER_KEY = "TRaMND2q8nbfyonoUyMucfc1g"; 
+var TWITTER_CONSUMER_SECRET = "Dqx2DzTNAwhAyijdDOH5irK1nvHpXXP9sEcPlZ3d9MHugSOzzu";
+var TWITTER_ACCESS_TOKEN_KEY = "2890108565-bYkbUHoz2wpz5eDKrMqEw5YmruyvqPt8TBZouVS";
+var TWITTER_ACCESS_TOKEN_SECRET = "NDRD9sap4YoboUmplYfPKBHK85HX5mX1Sb6jCxRRIRrZU";
+
 exports.twitter = {
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
   consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
