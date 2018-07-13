@@ -4,6 +4,7 @@ var keys = require("./keys.js");
 var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
 var fs = require("fs");
+var request = require("request");
 
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
@@ -15,6 +16,20 @@ var twitParams = {
     result_type: 'recent',
     lang: 'en'
   }
+var movieInput = "";
+
+function makeMovieUrl (){
+    var movieTitle = input.split(" ");
+    for(var k = 0; k<movieTitle.length; k++){
+        var newWord = movieTitle[k] + "+";
+        movieInput = movieInput+newWord;
+    }
+    movieInput = movieInput.slice(0, movieInput.length-1);
+}
+
+makeMovieUrl();
+
+var movieUrl = "http://www.omdbapi.com/?t=" + movieInput + "&y=&plot=short&apikey=trilogy";
 
 ////interprets the service being requested//////
 switch(service) {
@@ -95,8 +110,25 @@ function spotifySong(){
 }
 
 function movie(){
-    console.log("movie function was called");
+    console.log("movie function run");
+
+    if(input != null){
+    request(movieUrl, function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+            
+            console.log("Movie Title: " + JSON.parse(body).Title);
+            console.log("This movie was released in: " + JSON.parse(body).Year);
+            console.log("The movie's rating is: " + JSON.parse(body).imdbRating);
+                var rottenRating = JSON.parse(body).Ratings[1];
+            console.log("Rotten Tomatoes rates it at: " + JSON.stringify(rottenRating["Value"]));
+            console.log("Country of production: ", JSON.parse(body).Country);
+            console.log("Language(s) spoken in the film: ", JSON.parse(body).Language);
+            console.log("Plot: ", JSON.parse(body).Plot);
+            console.log("Featured performers: ", JSON.parse(body).Actors);
+        }
+    });
 }
+};
 
 function doSay(){
     console.log("doSay function was called");
