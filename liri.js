@@ -3,14 +3,20 @@ require("dotenv").config();
 var keys = require("./keys.js");
 var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
+var fs = require("fs");
 
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 var service = process.argv[2];
 var input = process.argv[3];
+var twitParams = {
+    q: '#nodejs',
+    count: 20,
+    result_type: 'recent',
+    lang: 'en'
+  }
 
-
-////interprets the service bein requested//////
+////interprets the service being requested//////
 switch(service) {
     case "my-tweets":
         tweet();
@@ -38,6 +44,24 @@ switch(service) {
 
 function tweet(){
     console.log("tweet function was called");
+    client.get("statuses/user_timeline", twitParams, function(error, tweets, response) {
+        if(!error && response.statusCode === 200) {
+            console.log(tweets);
+            for(var i = 0; i<tweets.length; i++){
+                var titleEnd = tweets[i].text.indexOf("http");
+                var title = tweets[i].text.slice(0, titleEnd);
+
+                var createdDate = tweets[i].created_at
+
+                var print = createdDate + ", " + title;
+                console.log(print);
+            }
+        }
+        
+        if(error){
+            console.log("response code error");
+        }
+    });
 }
 
 function spotifySong(){
