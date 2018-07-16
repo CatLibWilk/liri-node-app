@@ -16,7 +16,9 @@ var twitParams = {
     result_type: 'recent',
     lang: 'en'
   }
+
 var movieInput = "";
+
 
 /////does special actions if movie-this service selected/////
 if(service === "movie-this"){
@@ -24,7 +26,6 @@ if(service === "movie-this"){
         movieInput = "Mr.+Nobody"
     }else{
         function makeMovieUrl (){
-            console.log("makemovie run")
             var movieTitle = input.split(" ");
             for(var k = 0; k<movieTitle.length; k++){
                 var newWord = movieTitle[k] + "+";
@@ -40,36 +41,38 @@ if(service === "movie-this"){
 var movieUrl = "http://www.omdbapi.com/?t=" + movieInput + "&y=&plot=short&apikey=trilogy";
 
 ////interprets the service being requested//////
-switch(service) {
-    case "my-tweets":
-        tweet();
-        break;
 
-    case "spotify-this-song":
-        spotifySong();
-        break;
+function switchFunction(){
+    switch(service) {
+        case "my-tweets":
+            tweet();
+            break;
 
-    case "movie-this":
-        movie();
-        break;
+        case "spotify-this-song":
+            spotifySong();
+            break;
 
-    case "do-what-it-says":
-        doSay();
-        break;
+        case "movie-this":
+            movie();
+            break;
 
-    
-    default:
-        console.log("please select one of the services to use.")
+        case "do-what-it-says":
+            doSay();
+            break;
+
+        
+        default:
+            console.log("please select one of the services to use.")
+    }
 }
 
+switchFunction();
 ////servicefunctions defined/////////////
 
 
 function tweet(){
-    console.log("tweet function was called");
     client.get("statuses/user_timeline", twitParams, function(error, tweets, response) {
         if(!error && response.statusCode === 200) {
-            console.log(tweets);
             for(var i = 0; i<tweets.length; i++){
                 var titleEnd = tweets[i].text.indexOf("http");
                 var title = tweets[i].text.slice(0, titleEnd);
@@ -97,7 +100,6 @@ function spotifySong(){
                 return;
             }
 
-            console.log(input);
             var artist = (data.tracks.items[0].artists[0].name);
             console.log("Artist: ", artist);
     
@@ -123,8 +125,6 @@ function spotifySong(){
                 return;
             }
 
-            // console.log(data.tracks.items[5], null, 2);
-
             var artist = (data.tracks.items[5].artists[0].name);
             console.log("Artist: ", artist);
     
@@ -143,7 +143,6 @@ function spotifySong(){
     
         
 function movie(){
-    console.log("movie function run");
 
     // if(input != null){
         request(movieUrl, function(error, response, body) {
@@ -164,7 +163,6 @@ function movie(){
 };
 
 function doSay(){
-    console.log("doSay function was called");
     fs.readFile("random.txt", "utf8", function(error, data) {
 
         if (error){
@@ -176,27 +174,7 @@ function doSay(){
 
         input = command[1];
 
-        switch(service) {
-            case "my-tweets":
-                tweet();
-                break;
-        
-            case "spotify-this-song":
-                spotifySong();
-                break;
-        
-            case "movie-this":
-                movie();
-                break;
-        
-            case "do-what-it-says":
-                doSay();
-                break;
-        
-            
-            default:
-                console.log("please select one of the services to use.")
-        }
+        switchFunction();
     });
 }
 
