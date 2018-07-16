@@ -18,16 +18,24 @@ var twitParams = {
   }
 var movieInput = "";
 
-function makeMovieUrl (){
-    var movieTitle = input.split(" ");
-    for(var k = 0; k<movieTitle.length; k++){
-        var newWord = movieTitle[k] + "+";
-        movieInput = movieInput+newWord;
-    }
-    movieInput = movieInput.slice(0, movieInput.length-1);
-}
+/////does special actions if movie-this service selected/////
+if(service === "movie-this"){
+    if(input == null){
+        movieInput = "Mr.+Nobody"
+    }else{
+        function makeMovieUrl (){
+            console.log("makemovie run")
+            var movieTitle = input.split(" ");
+            for(var k = 0; k<movieTitle.length; k++){
+                var newWord = movieTitle[k] + "+";
+                movieInput = movieInput+newWord;
+            }
+            movieInput = movieInput.slice(0, movieInput.length-1);
+        }
 
-makeMovieUrl();
+        makeMovieUrl();
+    }
+}
 
 var movieUrl = "http://www.omdbapi.com/?t=" + movieInput + "&y=&plot=short&apikey=trilogy";
 
@@ -83,55 +91,79 @@ function spotifySong(){
     var searchInput = "";
     if(input != null){
         searchInput = input;
+        spotify.search({ type: 'track', query: searchInput, limit:1}, function(err, data) {
+            if (err){
+                console.log('Error occurred: ' + err);
+                return;
+            }
+
+            console.log(input);
+            var artist = (data.tracks.items[0].artists[0].name);
+            console.log("Artist: ", artist);
+    
+            var song = data.tracks.items[0];
+            console.log("Song Title: ", song.name);
+    
+            var album = data.tracks.items[0].album.name;
+            console.log("Album title: ", album);
+
+    
+            var preview = data.tracks.items[0].preview_url;
+
+            if(preview === null){
+                console.log("Sorry, no preview is available");
+            }else{
+            console.log("Listen to a preview here: ", preview);
+            }
+        });
     }else{
-        searchInput = "The Sign"
-    }
-    spotify.search({ type: 'track', query: searchInput, limit:1}, function(err, data) {
-        if ( err ) {
-            console.log('Error occurred: ' + err);
-            return;
+        spotify.search({ type: 'track', query: "The Sign", limit:6}, function(err, data) {
+            if ( err ) {
+                console.log('Error occurred: ' + err);
+                return;
+            }
+
+            // console.log(data.tracks.items[5], null, 2);
+
+            var artist = (data.tracks.items[5].artists[0].name);
+            console.log("Artist: ", artist);
+    
+            var song = data.tracks.items[5];
+            console.log("Song Title: ", song.name);
+    
+            var album = data.tracks.items[5].album.name;
+            console.log("Album title: ", album);
+    
+            var preview = data.tracks.items[5].preview_url;
+            console.log("Listen to a preview here: ", preview);
+            
         }
-        console.log(input);
-        var artist = (data.tracks.items[0].artists[0].name);
-        console.log("Artist: ", artist);
-
-        var song = data.tracks.items[0];
-        console.log("Song Title: ", song.name);
-
-        var album = data.tracks.items[0].album.name;
-        console.log("Album title: ", album);
-
-        var preview = data.tracks.items[0].preview_url;
-        console.log("Listen to a preview here: ", preview);
-    });
+    )}
+};
     
         
-    
-}
-
 function movie(){
     console.log("movie function run");
 
-    if(input != null){
-    request(movieUrl, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-            
-            console.log("Movie Title: " + JSON.parse(body).Title);
-            console.log("This movie was released in: " + JSON.parse(body).Year);
-            console.log("The movie's rating is: " + JSON.parse(body).imdbRating);
-                var rottenRating = JSON.parse(body).Ratings[1];
-            console.log("Rotten Tomatoes rates it at: " + JSON.stringify(rottenRating["Value"]));
-            console.log("Country of production: ", JSON.parse(body).Country);
-            console.log("Language(s) spoken in the film: ", JSON.parse(body).Language);
-            console.log("Plot: ", JSON.parse(body).Plot);
-            console.log("Featured performers: ", JSON.parse(body).Actors);
-        }
-    });
-}
+    // if(input != null){
+        request(movieUrl, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+                
+                console.log("Movie Title: " + JSON.parse(body).Title);
+                console.log("This movie was released in: " + JSON.parse(body).Year);
+                console.log("The movie's rating is: " + JSON.parse(body).imdbRating);
+                    var rottenRating = JSON.parse(body).Ratings[1];
+                console.log("Rotten Tomatoes rates it at: " + JSON.stringify(rottenRating["Value"]));
+                console.log("Country of production: ", JSON.parse(body).Country);
+                console.log("Language(s) spoken in the film: ", JSON.parse(body).Language);
+                console.log("Plot: ", JSON.parse(body).Plot);
+                console.log("Featured performers: ", JSON.parse(body).Actors);
+            }
+        });
+    // }
 };
 
 function doSay(){
     console.log("doSay function was called");
 }
 
-console.log("input was", input);
