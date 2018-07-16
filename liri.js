@@ -165,5 +165,38 @@ function movie(){
 
 function doSay(){
     console.log("doSay function was called");
+    fs.readFile("random.txt", "utf8", function(error, data) {
+
+        if (error){
+          return console.log(error);
+        }
+        
+        var command = data.split(",");
+        service = command[0];
+
+        input = command[1];
+
+        switch(service) {
+            case "my-tweets":
+                tweet();
+                break;
+        
+            case "spotify-this-song":
+                spotifySong();
+                break;
+        
+            case "movie-this":
+                movie();
+                break;
+        
+            case "do-what-it-says":
+                doSay();
+                break;
+        
+            
+            default:
+                console.log("please select one of the services to use.")
+        }
+    });
 }
 
